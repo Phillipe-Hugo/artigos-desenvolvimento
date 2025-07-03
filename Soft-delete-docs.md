@@ -22,8 +22,6 @@ Perda de Conhecimento: O conteúdo criado por ex-colaboradores corria o risco de
 
  
 
- 
-
 ✅ A Solução: Implementando o Soft Delete
  
 
@@ -36,7 +34,6 @@ Alterações Técnicas Realizadas
 
 A implementação foi focada em três áreas principais do código:
 
- 
 
 1. Atualização do Schema do Banco de Dados
  
@@ -49,21 +46,18 @@ Adicionamos o novo status DELETED ao enum de status de usuário, permitindo que 
 
 Ver código ANTES e DEPOIS
 
- 
-
-
 
 TypeScript
 
 
-// ANTES
-status: text('status', {
-  enum: ['ACTIVE', 'PENDING', 'BLOCKED', 'INACTIVITY'],
-}).$default(() => 'PENDING'),
-// DEPOIS
-status: text('status', {
-  enum: ['ACTIVE', 'PENDING', 'BLOCKED', 'INACTIVITY', 'DELETED'],
-}).$default(() => 'PENDING'),
+ // ANTES
+ status: text('status', {
+   enum: ['ACTIVE', 'PENDING', 'BLOCKED', 'INACTIVITY'],
+ }).$default(() => 'PENDING'),
+ // DEPOIS
+ status: text('status', {
+   enum: ['ACTIVE', 'PENDING', 'BLOCKED', 'INACTIVITY', 'DELETED'],
+ }).$default(() => 'PENDING'),
  
 
 
@@ -77,9 +71,6 @@ A lógica de negócio para deletar um usuário foi alterada. Em vez de executar 
  
 
 Ver código ANTES e DEPOIS
-
- 
-
 
 
 TypeScript
@@ -109,10 +100,6 @@ export const DeleteUserById = async (id: string) => {
 }
  
 
- 
-
- 
-
 3. Filtro de Usuários Deletados na Listagem
  
 
@@ -120,12 +107,8 @@ Para garantir que os usuários "deletados" não apareçam em listagens, pesquisa
 
 📍 Arquivo: lib/user.ts
 
- 
 
 Ver código ANTES e DEPOIS
-
- 
-
 
 
 TypeScript
@@ -160,12 +143,6 @@ export const getAllUsersWithPartialInfo = async () => {
 }
  
 
- 
-
- 
-
- 
-
 🎯 Benefícios Técnicos e de Negócio
  
 
@@ -181,16 +158,11 @@ A adoção do Soft Delete trouxe vantagens imediatas e estratégicas:
 
  
 
- 
-
 🚀 Guia de Uso e Recomendações
- 
-
  
 
 Para Administradores
 
- 
 
 A experiência na interface de administração permanece a mesma. O botão "Excluir Usuário" agora executa o soft delete. O usuário removido desaparecerá das listas ativas, mas suas contribuições (documentos, comentários, etc.) serão mantidas.
 
@@ -198,13 +170,10 @@ A experiência na interface de administração permanece a mesma. O botão "Excl
 
 Para Desenvolvedores
 
- 
 
 ⚠️ Atenção: Ao realizar consultas personalizadas diretamente no banco de dados que envolvam a tabela de usuários, lembre-se sempre de adicionar a condição where: ne(users.status, 'DELETED') para evitar que usuários deletados apareçam em locais inesperados. Utilize preferencialmente as funções de serviço já existentes, como getAllUsersWithPartialInfo(), que contêm este tratamento.
 
- 
 
- 
 
 📊 Monitoramento e Próximos Passos
  
