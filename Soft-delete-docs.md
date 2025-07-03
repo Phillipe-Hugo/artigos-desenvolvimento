@@ -66,9 +66,6 @@ status: text('status', {
 }).$default(() => 'PENDING'),
  
 
- 
-
- 
 
 2. Modificação da Função de Exclusão
  
