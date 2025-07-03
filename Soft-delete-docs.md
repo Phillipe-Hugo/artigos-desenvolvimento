@@ -47,18 +47,8 @@ Adicionamos o novo status DELETED ao enum de status de usuário, permitindo que 
 Ver código ANTES e DEPOIS
 
 
-TypeScript
+![image](https://github.com/user-attachments/assets/54ea5926-f2bd-45e3-995c-bc115806968e)
 
-
- // ANTES
- status: text('status', {
-   enum: ['ACTIVE', 'PENDING', 'BLOCKED', 'INACTIVITY'],
- }).$default(() => 'PENDING'),
- // DEPOIS
- status: text('status', {
-   enum: ['ACTIVE', 'PENDING', 'BLOCKED', 'INACTIVITY', 'DELETED'],
- }).$default(() => 'PENDING'),
- 
 
 
 2. Modificação da Função de Exclusão
@@ -72,33 +62,8 @@ A lógica de negócio para deletar um usuário foi alterada. Em vez de executar 
 
 Ver código ANTES e DEPOIS
 
+![image](https://github.com/user-attachments/assets/4459cf63-a9ed-4fab-8bee-3845436d8e89)
 
-TypeScript
-
-
-// ANTES - Exclusão física (Hard Delete)
-export const DeleteUserById = async (id: string) => {
-  // ... validações ...
-  try {
-    await db.delete(users).where(eq(users.id, id))
-    return { success: 'Usuário deletado com sucesso' }
-  } catch {
-    return { error: 'Erro ao deletar usuário' }
-  }
-}
-// DEPOIS - Marcação lógica (Soft Delete)
-export const DeleteUserById = async (id: string) => {
-  // ... validações ...
-  try {
-    // A linha abaixo foi substituída pela atualização de status
-    // await db.delete(users).where(eq(users.id, id))
-    await db.update(users).set({ status: 'DELETED' }).where(eq(users.id, id));
-    return { success: 'Usuário deletado com sucesso' }
-  } catch {
-    return { error: 'Erro ao deletar usuário' }
-  }
-}
- 
 
 3. Filtro de Usuários Deletados na Listagem
  
@@ -110,38 +75,9 @@ Para garantir que os usuários "deletados" não apareçam em listagens, pesquisa
 
 Ver código ANTES e DEPOIS
 
+![image](https://github.com/user-attachments/assets/2955b92e-530d-47e9-824b-9c0dab4e6db4)
 
-TypeScript
 
-
-// Adicionado import para a condição "not equal"
-import { eq, ne } from 'drizzle-orm'
-// ANTES - Retornava todos os usuários, independente do status
-export const getAllUsersWithPartialInfo = async () => {
-  try {
-    const users = (await db.query.users.findMany({
-      // ... colunas
-    })) as ParcialUser[]
-    return users
-  } catch {
-    return []
-  }
-}
-// DEPOIS - Filtra para não incluir usuários deletados
-export const getAllUsersWithPartialInfo = async () => {
-  try {
-    const usersResponse = (await db.query.users.findMany({
-      where: ne(users.status, 'DELETED'), // <-- FILTRO ADICIONADO
-      columns: {
-        // ... colunas
-      },
-    })) as ParcialUser[]
-    return usersResponse;
-  } catch {
-    return []
-  }
-}
- 
 
 🎯 Benefícios Técnicos e de Negócio
  
