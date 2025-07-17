@@ -1,3 +1,119 @@
+# FeedbackTable
+
+Componente React para exibição, filtragem e paginação de tabelas customizadas utilizando [@tanstack/react-table](https://tanstack.com/table/latest). Permite ordenação, filtro por coluna, seleção de linhas, destaque de métricas e controle de visibilidade de colunas.
+
+---
+
+## Sumário
+
+- [Descrição Geral](#descrição-geral)
+- [Props](#props)
+- [Funcionamento](#funcionamento)
+- [Funcionalidades](#funcionalidades)
+- [Destaque de Métricas](#destaque-de-métricas)
+- [Paginação](#paginação)
+- [Filtragem](#filtragem)
+- [Dependências](#dependências)
+- [Exemplo de Uso](#exemplo-de-uso)
+- [Código Fonte](#código-fonte)
+- [Customização](#customização)
+
+---
+
+## Descrição Geral
+
+O `FeedbackTable` é um componente de tabela dinâmica que recebe dados genéricos e colunas definidas pelo usuário. Ele permite mostrar, filtrar, ordenar e paginar informações, além de destacar colunas de métricas específicas. Seu foco é ser flexível para qualquer tipo de dado e visualização.
+
+---
+
+## Props
+
+```typescript
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]; // Definição das colunas da tabela (tanstack)
+  data: TData[];                       // Array de dados a serem exibidos
+}
+```
+
+---
+
+## Funcionamento
+
+- Utiliza `useReactTable` do Tanstack para gerenciar estado da tabela: ordenação, filtros, paginação, visibilidade e seleção de linhas.
+- Renderiza cabeçalho e células dinamicamente com `flexRender`.
+- Permite filtragem por campo específico (exemplo: 'guia'), controle de linhas por página e destaque de colunas de métricas.
+- Mostra mensagem customizada quando não há resultados.
+
+---
+
+## Funcionalidades
+
+- **Ordenação**: Clica no cabeçalho para ordenar colunas (default por 'total', decrescente).
+- **Filtragem**: Campo input para filtrar por coluna específica ('guia').
+- **Destaque de Métricas**: Botão para destacar colunas de métricas ('up', 'down', 'total', 'percentage').
+- **Paginação**: Navegação por páginas e seleção de quantidade de linhas exibidas.
+- **Seleção de Linhas**: Permite selecionar linhas.
+- **Controle de Visibilidade**: Permite esconder/exibir colunas dinamicamente (via estado, customizável).
+- **Feedback Visual**: Colunas destacadas recebem estilos visuais diferenciados.
+
+---
+
+## Destaque de Métricas
+
+Ao ativar o botão "Destacar Métricas", as colunas `up`, `down`, `total` e `percentage` recebem estilos visuais para facilitar a análise.
+
+---
+
+## Paginação
+
+- Botões para navegar entre páginas (primeira, anterior, próxima, última).
+- Exibe página atual, total de páginas e resultados visíveis.
+- Permite ajustar número de linhas por página (10, 20, 30, 40, 50).
+
+---
+
+## Filtragem
+
+- Campo de filtro para buscar por valor da coluna `guia`.
+- Mostra mensagem "Nenhum resultado encontrado" se não houver dados após filtragem.
+
+---
+
+## Dependências
+
+- **React** (`useState`)
+- **Tanstack React Table** (`@tanstack/react-table`)
+- **Lucide React** (`Search`, `ChevronLeft`, `ChevronRight`, `ChevronsLeft`, `ChevronsRight`, `ListFilter`)
+- **Componentes customizados**:
+  - `Input` (campo de texto)
+  - `Button` (botão)
+  - `Table`, `TableBody`, `TableCell`, `TableHead`, `TableHeader`, `TableRow` (tabela)
+  - `Select`, `SelectContent`, `SelectItem`, `SelectTrigger`, `SelectValue` (dropdown de seleção)
+
+---
+
+## Exemplo de Uso
+
+```tsx
+import FeedbackTable from '@/components/FeedbackTable';
+
+const columns = [/* Definições conforme ColumnDef */];
+const data = [/* Array de dados */];
+
+<FeedbackTable columns={columns} data={data} />
+```
+
+---
+
+## Código Fonte
+
+```typescript
+// ... (código completo do componente, igual ao seu fornecido acima)
+```
+<details>
+<summary>Visualizar código</summary>
+
+```typescript
 'use client';
 
 import {
@@ -262,3 +378,27 @@ export default function FeedbackTable<TData, TValue>({
 		</div>
 	);
 }
+```
+</details>
+
+---
+
+## Customização
+
+- Defina colunas e dados conforme necessidade via props.
+- Edite estilos e campos de filtro conforme sua aplicação.
+- Para destacar outras métricas, altere a função `shouldHighlightColumn`.
+- Integre com backend ou outras fontes de dados conforme necessário.
+
+---
+
+## Observações
+
+- Ideal para dashboards, painéis administrativos ou qualquer visualização tabular customizada.
+- Fácil de expandir: adicione novas funcionalidades alterando os estados ou integrando novos recursos do Tanstack Table.
+
+---
+
+## Autor
+
+Documentação gerada por [Phillipe-Hugo](https://github.com/Phillipe-Hugo).
