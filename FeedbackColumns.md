@@ -1,9 +1,32 @@
-'use client';
-import { type ColumnDef } from '@tanstack/react-table';
-import { ArrowUpIcon, ArrowDownIcon, MessageSquare } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+# feedbackColumns
 
+Definição de colunas para tabela de feedbacks de documentação, utilizando [@tanstack/react-table](https://tanstack.com/table/latest). Esta configuração é ideal para ser utilizada com o componente `FeedbackTable`, trazendo ordenação, filtro, métricas e visualização de títulos traduzidos.
 
+---
+
+## Sumário
+
+- [Descrição Geral](#descrição-geral)
+- [Tipo dos Dados](#tipo-dos-dados)
+- [Colunas Definidas](#colunas-definidas)
+- [Funcionalidades das Colunas](#funcionalidades-das-colunas)
+- [Dependências](#dependências)
+- [Exemplo de Uso](#exemplo-de-uso)
+- [Código Fonte](#código-fonte)
+- [Customização](#customização)
+- [Observações](#observações)
+
+---
+
+## Descrição Geral
+
+`feedbackColumns` é um array de definição de colunas para a tabela de feedbacks de documentação. Cada coluna possui lógica própria para ordenação, renderização customizada de células, filtros e estilização, incluindo destaque visual para métricas.
+
+---
+
+## Tipo dos Dados
+
+```typescript
 type FeedbackData = {
 	id: string;
 	up: number;
@@ -38,6 +61,64 @@ type FeedbackData = {
 		};
 	}[];
 };
+```
+
+---
+
+## Colunas Definidas
+
+- **GUIA**: Título da documentação (busca tradução em português ou qualquer tradução disponível).
+- **UP**: Quantidade de avaliações positivas (ícone e valor destacado).
+- **DOWN**: Quantidade de avaliações negativas (ícone e valor destacado).
+- **TOTAL**: Soma de votos positivos e negativos.
+- **APROVAÇÃO**: Percentual de votos positivos sobre o total.
+
+---
+
+## Funcionalidades das Colunas
+
+- **Ordenação**: Todas as colunas podem ser ordenadas clicando no cabeçalho.
+- **Filtro**: Coluna GUIA permite filtragem por título (case insensitive).
+- **Renderização customizada**:
+  - GUIA exibe título e ID.
+  - UP/DOWN mostram ícones coloridos e valores destacados.
+  - APROVAÇÃO calcula percentual e colore conforme resultado.
+  - TOTAL mostra soma dos votos.
+- **Tradução**: GUIA busca primeiro em português, caso não exista pega qualquer título disponível.
+- **Aprovação**: Percentual visual com cores: verde (>=70%), amarelo (>=50%), vermelho (<50%).
+
+---
+
+## Dependências
+
+- **@tanstack/react-table** (`ColumnDef`)
+- **Lucide React** (`ArrowUpIcon`, `ArrowDownIcon`, `MessageSquare`)
+- **Componentes customizados**:
+  - `Button` (utilizado nos cabeçalhos para ordenação)
+
+---
+
+## Exemplo de Uso
+
+```tsx
+import { feedbackColumns } from '@/components/feedback-columns';
+import FeedbackTable from '@/components/FeedbackTable';
+
+// Supondo que você possui um array de FeedbackData:
+<FeedbackTable columns={feedbackColumns} data={feedbacks} />
+```
+
+---
+
+## Código Fonte
+
+```typescript
+'use client';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpIcon, ArrowDownIcon, MessageSquare } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+// ... FeedbackData type conforme acima
 
 export const feedbackColumns: ColumnDef<FeedbackData>[] = [
 	{
@@ -188,3 +269,28 @@ export const feedbackColumns: ColumnDef<FeedbackData>[] = [
 			);
 		},
 	},
+];
+```
+
+</details>
+
+---
+
+## Customização
+
+- Adicione/remova colunas conforme sua necessidade.
+- Edite lógica de tradução ou cálculo para se adaptar a outros idiomas/métricas.
+- Modifique estilos conforme o tema do seu projeto.
+
+---
+
+## Observações
+
+- Ideal para uso em dashboards administrativos, relatórios de feedback ou painéis de documentação.
+- Pode ser integrado facilmente com o `FeedbackTable` ou outros componentes de tabela do Tanstack.
+
+---
+
+## Autor
+
+Documentação gerada por [Phillipe-Hugo](https://github.com/Phillipe-Hugo).
