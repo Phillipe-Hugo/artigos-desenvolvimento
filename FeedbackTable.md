@@ -108,7 +108,7 @@ const data = [/* Array de dados */];
 ## Código Fonte
 
 ```typescript
-// ... (código completo do componente, igual ao seu fornecido acima)
+// ... (código completo do componente, clique para expandir)
 ```
 <details>
 <summary>Visualizar código</summary>
