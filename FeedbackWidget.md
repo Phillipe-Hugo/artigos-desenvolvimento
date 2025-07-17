@@ -1,14 +1,102 @@
-'use client';
+# FeedbackWidget
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
-import { insertOrUpdateFeedbackScore } from '@/actions/feedback';
-import { toast } from 'sonner';
-import type { Locale } from '@/i18n.config';
-import { useQuery } from '@tanstack/react-query';
-import { getDictionaryAction } from '@/actions/dictionary-action';
+Componente React para coleta de feedback sobre a utilidade de uma página ou documento. Permite ao usuário registrar se o conteúdo foi útil (positivo) ou não (negativo), exibindo mensagens dinâmicas de agradecimento e tratamento de erros.
 
+---
+
+## Sumário
+
+- [Descrição Geral](#descrição-geral)
+- [Props](#props)
+- [Funcionamento](#funcionamento)
+- [Fluxo de Feedback](#fluxo-de-feedback)
+- [Internacionalização](#internacionalização)
+- [Persistência no LocalStorage](#persistência-no-localstorage)
+- [Dependências](#dependências)
+- [Exemplo de Uso](#exemplo-de-uso)
+- [Código Fonte](#código-fonte)
+- [Customização](#customização)
+
+---
+
+## Descrição Geral
+
+O `FeedbackWidget` é um componente React que exibe botões para o usuário indicar se achou útil uma página ou documento. A resposta é persistida localmente para evitar múltiplos envios e registrada em uma ação backend. As mensagens e labels são internacionalizadas e podem ser customizadas via dicionário.
+
+---
+
+## Props
+
+```typescript
+interface FeedbackWidgetProps {
+  documentoId: string; // Identificador único do documento/página
+  lang: Locale;        // Código do idioma (ex: 'pt', 'en', etc)
+}
+```
+
+---
+
+## Funcionamento
+
+- Ao renderizar, o componente busca um dicionário de textos via React Query e exibe a pergunta correspondente.
+- Permite ao usuário clicar em "Sim/Não" (ou "Yes/No") para enviar o feedback.
+- Após o envio, exibe uma mensagem de agradecimento adequada ao tipo de feedback.
+- Feedback é persistido no `localStorage` para impedir reenvio do mesmo usuário para o mesmo documento.
+
+---
+
+## Fluxo de Feedback
+
+1. **Renderização Inicial**: Pergunta se a página foi útil. Busca textos do dicionário.
+2. **Envio de Feedback**: Ao clicar em "Sim" ou "Não", chama a função `insertOrUpdateFeedbackScore`.
+3. **Persistência**: Salva o tipo de feedback no `localStorage` usando a chave `feedback-documento-{documentoId}`.
+4. **Status e Mensagens**:
+   - Mostra loading enquanto envia.
+   - Após envio, exibe agradecimento personalizado.
+   - Em caso de erro, mostra mensagem de erro via toast.
+
+---
+
+## Internacionalização
+
+O componente utiliza o dicionário carregado para exibir textos no idioma selecionado (`lang`). Caso o dicionário não esteja disponível, utiliza os textos padrão em português ou inglês.
+
+---
+
+## Persistência no LocalStorage
+
+- Feedback é salvo por documento, impedindo múltiplos envios para o mesmo `documentoId` pelo mesmo usuário.
+- Chave utilizada: `feedback-documento-{documentoId}`.
+- Estado do feedback é recuperado no carregamento do componente.
+
+---
+
+## Dependências
+
+- **React** (`useState`)
+- **React Query** (`useQuery`)
+- **Sonner** (`toast`)
+- **Lucide React** (`ThumbsUp`, `ThumbsDown`)
+- **Componentes customizados** (`Button`)
+- **Funções customizadas**:
+  - `insertOrUpdateFeedbackScore`
+  - `getDictionaryAction`
+
+---
+
+## Exemplo de Uso
+
+```tsx
+import FeedbackWidget from '@/components/FeedbackWidget';
+
+<FeedbackWidget documentoId="abc123" lang="pt" />
+```
+
+---
+
+## Código Fonte
+
+```typescript
 interface FeedbackWidgetProps {
   documentoId: string;
   lang: Locale;
@@ -173,3 +261,41 @@ export default function FeedbackWidget({ documentoId, lang }: FeedbackWidgetProp
     </div>
   );
 }
+```
+
+---
+
+## Customização
+
+- Textos podem ser customizados via dicionário retornado por `getDictionaryAction`.
+- Aparência dos botões pode ser adaptada via props do componente `Button` e classes Tailwind.
+
+---
+
+## Estrutura do Dicionário Esperada
+
+```typescript
+type FeedbackDictionary = {
+  question: string;
+  yes: string;
+  no: string;
+  sending: string;
+  success: string;
+  error: string;
+  thanks_positive: string;
+  thanks_negative: string;
+};
+```
+
+---
+
+## Observações
+
+- O componente só renderiza feedback customizado se o dicionário estiver disponível.
+- Pode ser facilmente adaptado para outros contextos alterando os textos e integrando com outros sistemas de registro de feedback.
+
+---
+
+## Autor
+
+Documentação gerada por [Phillipe-Hugo](https://github.com/Phillipe-Hugo).
